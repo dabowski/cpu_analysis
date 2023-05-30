@@ -1,0 +1,68 @@
+---
+title: Smartphone Processors Ranking & Scores
+---
+
+```{r setup, warning=F}
+library(tidyverse)
+library(rmarkdown)
+library(knitr)
+
+cpus <- read_csv("ML_ALL_benchmarks.csv")
+```
+
+##  Top CPU Performance
+```{r}
+kable(
+    cpus %>%
+        select(company, device, cpuName, cpuScore) %>%
+        arrange(desc(cpuScore)) %>%
+        head(10)
+)
+```
+
+##  Top GPU Performance
+```{r}
+kable(
+    cpus %>%
+        select(company, device, cpuName, gpuScore) %>%
+        arrange(desc(gpuScore)) %>%
+        head(10)
+)
+```
+
+##  Top TPU Performance
+```{r}
+kable(
+    cpus %>%
+        select(company, device, cpuName, npuScore) %>%
+        arrange(desc(npuScore)) %>%
+        head(10)
+)
+```
+
+## Clock Speed Distribution
+```{r}
+ggplot(cpus, mapping = aes(x = clock)) +
+    geom_histogram(binwidth = 500) +
+    xlab("Clock speed") +
+    ggtitle("Clock speed distribution")
+```
+
+## Cores Distribution
+```{r}
+ggplot(cpus, mapping = aes(x = cores)) +
+    geom_histogram(binwidth = 1) +
+    xlab("Number of Cores") +
+    ggtitle("Core count distribution")
+```
+
+## Top Performance by Producent
+```{r}
+performance_pivot <- cpus %>%
+    group_by(company) %>%
+    summarize(averageCPUPerformance = mean(cpuScore),
+              averageGPUPerformance = mean(gpuScore),
+              averageNPUPerformance = mean(npuScore))
+
+kable(performance_pivot)
+```
