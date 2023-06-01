@@ -1,5 +1,7 @@
 ---
 title: Smartphone Processors Ranking & Scores
+author: Tomasz Dąbkowski
+output: flexdashboard::flex_dashboard
 ---
 
 ```{r setup, warning=F}
@@ -8,9 +10,13 @@ library(rmarkdown)
 library(knitr)
 
 cpus <- read_csv("ML_ALL_benchmarks.csv")
+opts_chunk$set(fig.width = 5, fig.asp = 1/2)
 ```
+# Dashboard
 
-##  Top CPU Performance
+## Column 1
+
+###  Top CPU Performance
 ```{r}
 kable(
     cpus %>%
@@ -20,7 +26,7 @@ kable(
 )
 ```
 
-##  Top GPU Performance
+###  Top GPU Performance
 ```{r}
 kable(
     cpus %>%
@@ -30,7 +36,7 @@ kable(
 )
 ```
 
-##  Top TPU Performance
+###  Top TPU Performance
 ```{r}
 kable(
     cpus %>%
@@ -40,23 +46,7 @@ kable(
 )
 ```
 
-## Clock Speed Distribution
-```{r}
-ggplot(cpus, mapping = aes(x = clock)) +
-    geom_histogram(binwidth = 500) +
-    xlab("Clock speed") +
-    ggtitle("Clock speed distribution")
-```
-
-## Cores Distribution
-```{r}
-ggplot(cpus, mapping = aes(x = cores)) +
-    geom_histogram(binwidth = 1) +
-    xlab("Number of Cores") +
-    ggtitle("Core count distribution")
-```
-
-## Top Performance by Producent
+### Top Performance by Producent
 ```{r}
 performance_pivot <- cpus %>%
     group_by(company) %>%
@@ -65,4 +55,27 @@ performance_pivot <- cpus %>%
               averageNPUPerformance = mean(npuScore))
 
 kable(performance_pivot)
+```
+
+## Column 2
+
+### Clock Speed Distribution
+```{r}
+ggplot(cpus, mapping = aes(x = clock)) +
+    geom_histogram(binwidth = 500) +
+    xlab("Clock speed")
+```
+
+### Core Count Distribution
+```{r}
+ggplot(cpus, mapping = aes(x = cores)) +
+    geom_histogram(binwidth = 1) +
+    xlab("Number of Cores") 
+```
+
+# Quick summary
+
+### Quick summary
+```{r}
+summary(cpus)
 ```
